@@ -6,7 +6,7 @@ import com.example.newproject.repository.JournalEntryRepo;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +21,7 @@ public class JournalEntryService {
     @Autowired
     private UserEntryService userEntryService;
 
+    @Transactional
     public void saveEntry(JournalEntity entity , String username){
         UserEntity user = userEntryService.getUserByName(username);
         entity.setDate(LocalDateTime.now());
@@ -41,11 +42,22 @@ public class JournalEntryService {
         return journalEntryRepo.findById(ID);
     }
 
-    public void deleteByID(ObjectId ID ,String username){
-        UserEntity user = userEntryService.getUserByName(username);
-        user.getJournalEntityList().removeIf(x->x.getId().equals(ID));
-        userEntryService.saveUser(user);
-        journalEntryRepo.deleteById(ID);
+    public boolean deleteByID(ObjectId ID ,String username){
+        boolean removed = false;
+        try {
+            UserEntity user = userEntryService.getUserByName(username);
+            removed = user.getJournalEntityList().removeIf(x -> x.getId().equals(ID));
+            if (removed) {
+                userEntryService.saveUser(user);
+                journalEntryRepo.deleteById(ID);
+            }
+        }
+        catch (Exception e){
+            System.out.println(e);
+            throw new RuntimeException("some error is coming up");
+
+        }
+        return removed;
     }
 
 

@@ -1,16 +1,16 @@
 package com.example.newproject.controller;
 
-
-import com.example.newproject.entity.JournalEntity;
 import com.example.newproject.entity.UserEntity;
+import com.example.newproject.repository.UserEntryRepo;
 import com.example.newproject.service.UserEntryService;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/user")
@@ -19,32 +19,32 @@ public class UserEntityController {
     @Autowired
     private UserEntryService userEntryService;
 
-    @PostMapping
-    public void createUser(@RequestBody UserEntity user){
-        userEntryService.saveUser(user);
-    }
+    @Autowired
+    private UserEntryRepo userEntryRepo;
 
-    @GetMapping
-    public List<UserEntity> getAllUser(){
-        return userEntryService.getAllUser();
-    }
+    @PutMapping
+    public ResponseEntity<?> updateLoggedInUser (@RequestBody UserEntity newEntity) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUsername = authentication.getName();
 
-    @GetMapping("/name/{username}")
-    public UserEntity getUserByName(@PathVariable String username){
-        return userEntryService.getUserByName(username);
-    }
+        UserEntity oldEntity = userEntryService.getUserByName(loggedInUsername);
 
-    @PutMapping("/name/{username}")
-    public ResponseEntity<?> putEntityById(@PathVariable String username, @RequestBody UserEntity newEntity) {
-
-        UserEntity oldEntity = userEntryService.getUserByName(username);
-
-        if (oldEntity != null) {
-            oldEntity.setUsername(newEntity.getUsername());
-            oldEntity.setPassword(newEntity.getPassword());
-            userEntryService.saveUser(oldEntity);
+        if (oldEntity == null) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        oldEntity.setUsername(newEntity.getUsername());
+        oldEntity.setPassword(newEntity.getPassword());
+        userEntryService.saveUser(oldEntity);
+
+        return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteUserById(Principal principal){
+        String username = principal.getName();
+        userEntryRepo.deleteByUsername(username);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
 }

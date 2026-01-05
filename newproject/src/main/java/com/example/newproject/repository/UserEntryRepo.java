@@ -9,4 +9,5 @@ public interface UserEntryRepo extends MongoRepository<UserEntity,String>{
 
     UserEntity findByUsername(String username);
 
+    void deleteByUsername(String username);
 }
