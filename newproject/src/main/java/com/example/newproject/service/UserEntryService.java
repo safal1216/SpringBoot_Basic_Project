@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +23,12 @@ public class UserEntryService {
     public void saveNewUser(UserEntity userEntity) {
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
         userEntity.setRoles(Arrays.asList("USER"));
+        userEntryRepo.save(userEntity);
+    }
+
+    public void saveAdminUser(UserEntity userEntity) {
+        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
+        userEntity.setRoles(Arrays.asList("USER","ADMIN"));
         userEntryRepo.save(userEntity);
     }
 

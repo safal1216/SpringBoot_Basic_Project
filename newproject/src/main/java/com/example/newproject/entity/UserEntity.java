@@ -1,5 +1,6 @@
 package com.example.newproject.entity;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Document(collection = "user_entity")
 @Data
+@Builder
 public class UserEntity {
 
     @Id
