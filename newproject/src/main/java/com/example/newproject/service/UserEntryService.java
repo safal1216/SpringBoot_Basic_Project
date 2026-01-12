@@ -1,6 +1,7 @@
 package com.example.newproject.service;
 import com.example.newproject.entity.UserEntity;
 import com.example.newproject.repository.UserEntryRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
+@Slf4j
 public class UserEntryService {
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -24,6 +26,7 @@ public class UserEntryService {
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
         userEntity.setRoles(Arrays.asList("USER"));
         userEntryRepo.save(userEntity);
+        log.info("User saved to DB: {}", userEntity.getUsername());
     }
 
     public void saveAdminUser(UserEntity userEntity) {

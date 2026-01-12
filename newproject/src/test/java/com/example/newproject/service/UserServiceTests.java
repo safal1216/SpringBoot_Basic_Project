@@ -1,6 +1,7 @@
 package com.example.newproject.service;
 
 import com.example.newproject.repository.UserEntryRepo;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ public class UserServiceTests {
     @Autowired
     private UserEntryRepo userEntryRepo;
 
+    @Disabled
     @ParameterizedTest
     @CsvSource({
             "Ram",

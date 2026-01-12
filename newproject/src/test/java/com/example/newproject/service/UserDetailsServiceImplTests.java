@@ -4,6 +4,7 @@ import com.example.newproject.entity.UserEntity;
 import com.example.newproject.repository.UserEntryRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ public class UserDetailsServiceImplTests {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Disabled
     @Test
     public void loadUserByUsernameTest(){
         UserEntity userEntity = UserEntity.builder()

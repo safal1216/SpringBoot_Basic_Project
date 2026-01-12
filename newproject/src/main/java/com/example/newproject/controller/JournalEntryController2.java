@@ -38,7 +38,6 @@ public class JournalEntryController2 {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
     @GetMapping
     public ResponseEntity<?> getALlJournalEntriesByUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
