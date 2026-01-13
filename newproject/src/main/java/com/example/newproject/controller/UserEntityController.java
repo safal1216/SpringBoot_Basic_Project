@@ -1,8 +1,10 @@
 package com.example.newproject.controller;
 
+import com.example.newproject.api.response.WeatherResponse;
 import com.example.newproject.entity.UserEntity;
 import com.example.newproject.repository.UserEntryRepo;
 import com.example.newproject.service.UserEntryService;
+import com.example.newproject.service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ public class UserEntityController {
 
     @Autowired
     private UserEntryService userEntryService;
+
+    @Autowired
+    private WeatherService weatherService;
 
     @Autowired
     private UserEntryRepo userEntryRepo;
@@ -47,4 +52,17 @@ public class UserEntityController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+
+    @GetMapping
+    public ResponseEntity<?> greetings(Principal principal){
+        String username = principal.getName();
+        WeatherResponse weatherResponse = weatherService.getWeather("New York");
+        String greeting = "";
+        if (weatherResponse != null) {
+            greeting = ", Weather feels like " + weatherResponse.getCurrent().getFeelslike();
+        }
+        return new ResponseEntity<>("Hi " + username + greeting, HttpStatus.OK);
+    }
+
+
 }
