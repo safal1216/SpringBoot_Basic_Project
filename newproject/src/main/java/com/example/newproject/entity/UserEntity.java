@@ -27,6 +27,10 @@ public class UserEntity {
     @NonNull
     private String password;
 
+    private String email;
+    private boolean sentimentAnalysis;
+
+
     @Builder.Default
     @DBRef
     private ArrayList<JournalEntity> journalEntityList = new ArrayList<>();
